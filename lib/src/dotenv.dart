@@ -141,15 +141,10 @@ class DotEnv {
 
   // testing
 
-  bool _isSetMock = false;
-
   Map<String, String>? _mockValue;
 
   @visibleForTesting
   void setMock(Map<String, String> value) {
-    if (_isSetMock) return;
-    _isSetMock = true;
-
     _mockValue = value;
   }
 
