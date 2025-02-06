@@ -6,8 +6,9 @@ void main() {
   group('dotenv', () {
     setUp(() async {
       print(Directory.current.toString());
-      dotenv
-          .setMockInitialValues({'.env': File('test/.env').readAsStringSync()});
+      dotenv.setMockInitialValues(
+        {'.env': File('test/.env').readAsStringSync()},
+      );
       await dotenv.load();
     });
     test('when .env is loaded we should be able to get the .env variables', () {
