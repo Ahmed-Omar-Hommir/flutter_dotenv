@@ -144,7 +144,7 @@ class DotEnv {
   Map<String, String>? _mockValue;
 
   @visibleForTesting
-  void setMock(Map<String, String> value) {
+  void setMockInitialValues(Map<String, String> value) {
     _mockValue = value;
   }
 
