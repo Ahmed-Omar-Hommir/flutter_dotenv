@@ -139,19 +139,18 @@ class DotEnv {
     _isInitialized = true;
   }
 
-  void testLoad(
-      {String fileInput = '',
-      Parser parser = const Parser(),
-      Map<String, String> mergeWith = const {}}) {
-    clean();
-    final linesFromFile = fileInput.split('\n');
-    final linesFromMergeWith = mergeWith.entries
-        .map((entry) => "${entry.key}=${entry.value}")
-        .toList();
-    final allLines = linesFromMergeWith..addAll(linesFromFile);
-    final envEntries = parser.parse(allLines);
-    _envMap.addAll(envEntries);
-    _isInitialized = true;
+  // testing
+
+  bool _isSetMock = false;
+
+  Map<String, String>? _mockValue;
+
+  @visibleForTesting
+  void setMock(Map<String, String> value) {
+    if (_isSetMock) return;
+    _isSetMock = true;
+
+    _mockValue = value;
   }
 
   /// True if all supplied variables have nonempty value; false otherwise.
@@ -163,7 +162,16 @@ class DotEnv {
   Future<List<String>> _getEntriesFromFile(String filename) async {
     try {
       WidgetsFlutterBinding.ensureInitialized();
-      var envString = await rootBundle.loadString(filename);
+      String envString;
+
+      final mockValue = _mockValue;
+
+      if (mockValue == null) {
+        envString = await rootBundle.loadString(filename);
+      } else {
+        envString = mockValue[filename]!;
+      }
+
       if (envString.isEmpty) {
         throw EmptyEnvFileError();
       }

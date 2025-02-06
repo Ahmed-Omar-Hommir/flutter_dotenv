@@ -4,11 +4,10 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('dotenv', () {
-    setUp(() {
+    setUp(() async {
       print(Directory.current.toString());
-      dotenv.testLoad(
-          fileInput: File('test/.env')
-              .readAsStringSync()); // mergeWith: Platform.environment
+      dotenv.setMock({'.env': File('test/.env').readAsStringSync()});
+      await dotenv.load();
     });
     test('when .env is loaded we should be able to get the .env variables', () {
       expect(dotenv.env['FOO'], 'foo');
