@@ -19,20 +19,21 @@ void main() {
     });
 
     test('it strips trailing comments', () {
-      var out = psr.strip(
+      var out = psr.removeCommentsFromLine(
           'needs="explanation"  # It was the year when they finally immanentized the Eschaton.');
       expect(out, equals('needs="explanation"'));
-      out = psr.strip(
+      out = psr.removeCommentsFromLine(
           'needs="explanation  # It was the year when they finally immanentized the Eschaton." ');
       expect(
           out,
           equals(
               'needs="explanation  # It was the year when they finally immanentized the Eschaton."'));
-      out = psr.strip(
+      out = psr.removeCommentsFromLine(
           'needs=explanation  # It was the year when they finally immanentized the Eschaton."',
           includeQuotes: true);
       expect(out, equals('needs=explanation'));
-      out = psr.strip('  # It was the best of times, it was a waste of time.');
+      out = psr.removeCommentsFromLine(
+          '  # It was the best of times, it was a waste of time.');
       expect(out, isEmpty);
     });
     test('it knows quoted # is not a comment', () {
@@ -45,8 +46,7 @@ void main() {
     test('it handles quotes in a comment', () {
       // note terminal whitespace
       var sing = psr.parseOne("fruit = 'banana' # comments can be 'sneaky!' ");
-      var doub =
-          psr.parseOne('fruit = " banana" # comments can be "sneaky!" ');
+      var doub = psr.parseOne('fruit = " banana" # comments can be "sneaky!" ');
       var none =
           psr.parseOne('fruit =    banana  # comments can be "sneaky!" ');
 
@@ -153,12 +153,14 @@ void main() {
 
     test('it skips var substitution in single quotes', () {
       var r = rand.nextInt(ceil); // avoid runtime collision with real env vars
-      var out = psr.parseOne("some_var='my\$key_$r'", envMap: {'key_$r': 'val'});
+      var out =
+          psr.parseOne("some_var='my\$key_$r'", envMap: {'key_$r': 'val'});
       expect(out['some_var'], equals('my\$key_$r'));
     });
     test('it performs var subs in double quotes', () {
       var r = rand.nextInt(ceil); // avoid runtime collision with real env vars
-      var out = psr.parseOne('some_var="my\$key_$r"', envMap: {'key_$r': 'val'});
+      var out =
+          psr.parseOne('some_var="my\$key_$r"', envMap: {'key_$r': 'val'});
       expect(out['some_var'], equals('myval'));
     });
     test('it performs var subs without quotes', () {
